@@ -64,10 +64,6 @@ IUnitOfWork и UnitOfWork объединяют репозитории и сох�
 Контроллеры CategoriesController и ProductsController поддерживают GET, POST, PUT и DELETE
 Маршруты: /api/categories и /api/products, для отдельной записи добавляется /{id}
 
-Снимки home1.png-home3.png сделай до создания тестовых записей
-Затем выполняй запросы Postman по порядку, ID подставляются автоматически
-На снимках Postman показывай метод, URL, данные запроса, статус и ответ
-
 ![Все категории](screenshots/home2.png)
 
 На /categories.html отправь «GET - получить все записи», сними две начальные категории и статус 200
