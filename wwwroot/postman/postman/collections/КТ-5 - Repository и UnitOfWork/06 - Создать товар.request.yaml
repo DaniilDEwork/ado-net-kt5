@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/api/products"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"price\":  1500,\r
+
+    \    \"categoryId\":  {{categoryId}},\r
+
+    \    \"description\":  \"Пример товара\",\r
+
+    \    \"name\":  \"Тестовый товар\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(201));
+      pm.test("Новый товар", () => {
+          const product = pm.response.json();
+          pm.expect(product.name).to.eql("Тестовый товар");
+          pm.expect(product.price).to.eql(1500);
+          pm.expect(product.categoryId).to.eql(Number(pm.collectionVariables.get("categoryId")));
+          pm.collectionVariables.set("productId", product.id);
+      });
+    language: text/javascript
+order: 6000

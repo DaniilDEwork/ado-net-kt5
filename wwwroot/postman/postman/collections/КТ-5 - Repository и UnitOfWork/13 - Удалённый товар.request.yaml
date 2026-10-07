@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/products/{{productId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(404));
+      pm.test("Товар не найден", () => pm.expect(pm.response.json().message).to.eql("Товар не найден"));
+    language: text/javascript
+order: 13000

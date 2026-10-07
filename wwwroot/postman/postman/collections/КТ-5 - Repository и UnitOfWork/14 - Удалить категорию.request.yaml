@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categories/{{categoryId}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(204));
+      pm.test("Пустой ответ", () => pm.expect(pm.response.text()).to.eql(""));
+    language: text/javascript
+order: 14000

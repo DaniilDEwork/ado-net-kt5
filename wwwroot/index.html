@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>КТ-5 - Repository и UnitOfWork</title>
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <p class="site-title">КТ-5 - Repository и UnitOfWork</p>
+            <nav>
+                <a href="/">Главная</a>
+                <a href="/categories.html">Категории</a>
+                <a href="/products.html">Товары</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container content">
+        <h1>API каталога товаров</h1>
+        <p>Проект использует Entity Framework Core, SQLite и шаблоны Repository и UnitOfWork</p>
+        <p>У каждого товара есть категория, название, цена и необязательное описание</p>
+        <ul class="examples">
+            <li><a href="/categories.html">Запросы к категориям</a> - получение, создание, изменение и удаление</li>
+            <li><a href="/products.html">Запросы к товарам</a> - получение, создание, изменение и удаление</li>
+            <li><a href="/api/categories">GET /api/categories</a> - JSON со всеми категориями</li>
+            <li><a href="/api/products">GET /api/products</a> - JSON со всеми товарами</li>
+            <li><a href="/postman/kt5.postman_collection.json" download>Коллекция Postman</a> - готовые запросы и проверки ответов</li>
+        </ul>
+        <h2>Работа с запросами</h2>
+        <p>Выберите страницу категорий или товаров, затем операцию и нажмите «Отправить запрос»</p>
+        <p>Для изменения или удаления записи укажите её ID, для создания и изменения заполните JSON</p>
+        <p>Сначала создаётся категория, затем товар с её ID, при удалении порядок обратный</p>
+        <p class="hint">При первом запуске добавляются две категории и три товара, изменения сохраняются в базе данных</p>
+    </main>
+    <footer class="container">ASP.NET Core Web API - КТ-5</footer>
+</body>
+</html>

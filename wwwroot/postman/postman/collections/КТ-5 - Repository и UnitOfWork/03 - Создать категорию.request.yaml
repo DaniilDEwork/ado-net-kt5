@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categories"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\":  \"Тестовая категория\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(201));
+      pm.test("Новая категория", () => {
+          const category = pm.response.json();
+          pm.expect(category.name).to.eql("Тестовая категория");
+          pm.expect(category.id).to.be.above(0);
+          pm.collectionVariables.set("categoryId", category.id);
+          pm.expect(pm.response.headers.get("Location").toLowerCase()).to.include("/api/categories/" + category.id);
+      });
+    language: text/javascript
+order: 3000

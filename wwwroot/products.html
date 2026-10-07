@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Товары - КТ-5</title>
+    <link rel="stylesheet" href="/css/site.css">
+    <script src="/js/api-client.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <p class="site-title">КТ-5 - Repository и UnitOfWork</p>
+            <nav>
+                <a href="/">Главная</a>
+                <a href="/categories.html">Категории</a>
+                <a href="/products.html">Товары</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container content">
+        <h1>Товары</h1>
+        <p>Работа с товарами через /api/products</p>
+        <form id="request-form" data-resource="products">
+            <label for="operation">Операция</label>
+            <select id="operation">
+                <option value="list">GET - получить все записи</option>
+                <option value="get">GET - получить запись по ID</option>
+                <option value="create">POST - создать запись</option>
+                <option value="update">PUT - изменить запись</option>
+                <option value="delete">DELETE - удалить запись</option>
+            </select>
+            <label for="record-id">ID записи</label>
+            <input id="record-id" type="number" min="1" step="1" value="1" required disabled>
+            <label for="request-body">Тело запроса в формате JSON</label>
+            <textarea id="request-body" rows="7" disabled>{
+  "name": "Тестовый товар",
+  "description": "Пример товара",
+  "price": 1500,
+  "categoryId": 1
+}</textarea>
+            <p class="hint">Название обязательно, цена от 0,01 до 1 000 000, categoryId должен указывать на существующую категорию</p>
+            <button type="submit" id="send-button">Отправить запрос</button>
+        </form>
+        <p id="error" class="error" role="alert"></p>
+        <h2>Ответ сервера</h2>
+        <dl class="response-info">
+            <dt>Метод</dt><dd id="response-method">Запрос ещё не отправлен</dd>
+            <dt>URL</dt><dd id="response-url">/api/products</dd>
+            <dt>Статус</dt><dd id="response-status">Запрос ещё не отправлен</dd>
+            <dt>Content-Type</dt><dd id="response-type">Запрос ещё не отправлен</dd>
+        </dl>
+        <pre id="response-body" class="preview">Здесь появится ответ API</pre>
+    </main>
+    <footer class="container">ASP.NET Core Web API - КТ-5</footer>
+</body>
+</html>

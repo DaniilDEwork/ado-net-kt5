@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categories/{{categoryId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\":  \"Обновлённая категория\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(200));
+      pm.test("Название изменено", () => pm.expect(pm.response.json().name).to.eql("Обновлённая категория"));
+    language: text/javascript
+order: 5000

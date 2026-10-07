@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categories/{{categoryId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(404));
+      pm.test("Категория не найдена", () => pm.expect(pm.response.json().message).to.eql("Категория не найдена"));
+    language: text/javascript
+order: 15000

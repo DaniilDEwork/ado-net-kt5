@@ -1,0 +1,6 @@
+$kind: collection
+description: Выполняйте запросы по порядку, ID новых записей сохраняются автоматически, в конце тестовые записи удаляются
+variables:
+  baseUrl: http://localhost:5173
+  categoryId: ""
+  productId: ""

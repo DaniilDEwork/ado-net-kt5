@@ -1,0 +1,427 @@
+{
+  "info": {
+    "name": "КТ-5 - Repository и UnitOfWork",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Выполняйте запросы по порядку, ID новых записей сохраняются автоматически, в конце тестовые записи удаляются"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5173",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Все категории",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/categories"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Список категорий\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Все товары",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/products"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Список товаров\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Создать категорию",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/categories",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":  \"Тестовая категория\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(201));",
+              "pm.test(\"Новая категория\", () => {",
+              "    const category = pm.response.json();",
+              "    pm.expect(category.name).to.eql(\"Тестовая категория\");",
+              "    pm.expect(category.id).to.be.above(0);",
+              "    pm.collectionVariables.set(\"categoryId\", category.id);",
+              "    pm.expect(pm.response.headers.get(\"Location\").toLowerCase()).to.include(\"/api/categories/\" + category.id);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Категория по ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(200));",
+              "pm.test(\"ID категории\", () => pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"categoryId\"))));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Изменить категорию",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/categories/{{categoryId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":  \"Обновлённая категория\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Название изменено\", () => pm.expect(pm.response.json().name).to.eql(\"Обновлённая категория\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Создать товар",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"price\":  1500,\r\n    \"categoryId\":  {{categoryId}},\r\n    \"description\":  \"Пример товара\",\r\n    \"name\":  \"Тестовый товар\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(201));",
+              "pm.test(\"Новый товар\", () => {",
+              "    const product = pm.response.json();",
+              "    pm.expect(product.name).to.eql(\"Тестовый товар\");",
+              "    pm.expect(product.price).to.eql(1500);",
+              "    pm.expect(product.categoryId).to.eql(Number(pm.collectionVariables.get(\"categoryId\")));",
+              "    pm.collectionVariables.set(\"productId\", product.id);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Товар по ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/products/{{productId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(200));",
+              "pm.test(\"ID товара\", () => pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"productId\"))));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Изменить товар",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/products/{{productId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"price\":  1800,\r\n    \"categoryId\":  {{categoryId}},\r\n    \"description\":  \"Описание после изменения\",\r\n    \"name\":  \"Обновлённый товар\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Товар изменён\", () => {",
+              "    const product = pm.response.json();",
+              "    pm.expect(product.name).to.eql(\"Обновлённый товар\");",
+              "    pm.expect(product.price).to.eql(1800);",
+              "    pm.expect(product.description).to.eql(\"Описание после изменения\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Категория с товарами",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(409));",
+              "pm.test(\"Удаление запрещено\", () => pm.expect(pm.response.json().message).to.eql(\"Нельзя удалить категорию, пока в ней есть товары\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Неверная цена",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"price\":  -1,\r\n    \"categoryId\":  {{categoryId}},\r\n    \"name\":  \"Неверный товар\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(400));",
+              "pm.test(\"Ошибка цены\", () => pm.expect(pm.response.json().errors).to.have.property(\"Price\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Несуществующая категория",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"price\":  100,\r\n    \"categoryId\":  2147483647,\r\n    \"name\":  \"Неверный товар\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(400));",
+              "pm.test(\"Ошибка категории\", () => pm.expect(pm.response.json().message).to.eql(\"Указанная категория не существует\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Удалить товар",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/products/{{productId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(204));",
+              "pm.test(\"Пустой ответ\", () => pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 - Удалённый товар",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/products/{{productId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(404));",
+              "pm.test(\"Товар не найден\", () => pm.expect(pm.response.json().message).to.eql(\"Товар не найден\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 - Удалить категорию",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(204));",
+              "pm.test(\"Пустой ответ\", () => pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 - Удалённая категория",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Статус ответа\", () => pm.response.to.have.status(404));",
+              "pm.test(\"Категория не найдена\", () => pm.expect(pm.response.json().message).to.eql(\"Категория не найдена\"));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

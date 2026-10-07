@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/api/products"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"price\":  100,\r
+
+    \    \"categoryId\":  2147483647,\r
+
+    \    \"name\":  \"Неверный товар\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(400));
+      pm.test("Ошибка категории", () => pm.expect(pm.response.json().message).to.eql("Указанная категория не существует"));
+    language: text/javascript
+order: 11000

@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/api/products"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"price\":  -1,\r
+
+    \    \"categoryId\":  {{categoryId}},\r
+
+    \    \"name\":  \"Неверный товар\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Статус ответа", () => pm.response.to.have.status(400));
+      pm.test("Ошибка цены", () => pm.expect(pm.response.json().errors).to.have.property("Price"));
+    language: text/javascript
+order: 10000

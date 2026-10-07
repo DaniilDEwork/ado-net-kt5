@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: ade9269e-1d30-42a4-818e-92217ecd17fa
+
+localResources:
+  collections:
+    - ../postman/collections/КТ-5 - Repository и UnitOfWork
